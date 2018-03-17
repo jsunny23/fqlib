@@ -1,11 +1,11 @@
-"""All FastQ functionality for fqlib.
-
-This module includes all FastQ functionality. Included in the module are things
-such as utilities for reading/stepping-through FastQ files and reading/stepping-through
-a pair of FastQ files.
+"""This module includes all classes for modelling FastQ functions. Included in the 
+module are things such as utilities for reading/stepping-through FastQ files and 
+reading/stepping-through a pair of FastQ files.
 """
 
 import os
+
+from typing import List
 
 from . import validators
 from .error import SingleReadValidationError, PairedReadValidationError
@@ -24,7 +24,7 @@ class FastQRead:
         sequence (str): sequence referred to in the read.
         plusline (str): content of the 'plusline' in the read.
         quality (str): corresponding quality of sequence in the read.
-        interleave (str or None): if applicable, interleave of the read.
+        interleave (str): if applicable, interleave of the read.
 
     Args:
         name (str): proper name of the read in the FastQ file.
@@ -47,6 +47,8 @@ class FastQRead:
             if self.name.endswith(interleave):
                 self.name = self.name[:-len(interleave)]
                 self.interleave = interleave
+
+        return None
 
     def __repr__(self):
         return f"FastQRead(name={self.name}, sequence={self.sequence}, " \
@@ -202,6 +204,13 @@ class PairedFastQFiles:
     """A class that steps through two FastQFiles at the same time and validates them
     from a global perspective.
 
+    Attributes:
+        read_one_filename (str): Path to the read one file.
+        read_two_filename (str): Path to the read two file.
+        lint_mode (str): Linting in 'error' or 'report' mode.
+        single_read_validation_level (str): Validation level for the single read errors.
+        paired_read_validation_level (str): Validation level for the paired read errors.
+
     Args:
         read_one_filename (str): Path to the read one file.
         read_two_filename (str): Path to the read two file.
@@ -295,7 +304,11 @@ class PairedFastQFiles:
         return (read_one, read_two)
 
     def get_validators(self):
-        """Returns a tuple with (SingleReadValidators, PairedReadValidators)"""
+        """Get both single read and paired read validators for the FastQ pair.
+        
+        Returns:
+            A tuple with (SingleReadValidators, PairedReadValidators).
+        """
         sr_validators = [
             (v.code, v.__class__.__name__)
             for v in self.read_one_fastqfile.validators

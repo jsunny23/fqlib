@@ -1,6 +1,8 @@
 """All validation logic for fqlib."""
 
 import re
+from abc import ABC, abstractmethod
+from typing import Any
 
 
 class ValidationLevel:
@@ -11,17 +13,18 @@ class ValidationLevel:
     HIGH = 3
 
     @staticmethod
-    def resolve(value):
+    def resolve(value: Any):
         """Resolve an input to a ValidationLevel or throw an error.
 
         Args:
-            value(object): Any value that may be interpretted as a ValidationLevel.
+            value (Any): Any value that may be interpretted as a ValidationLevel.
 
         Throws:
             ValueError: if the input cannot be parsed, a ValueError is thrown.
 
-        Return:
-            A validation level."""
+        Returns:
+            A validation level object corresponding to the input value.
+        """
 
         if isinstance(value, ValidationLevel):
             return value
@@ -36,13 +39,27 @@ class ValidationLevel:
         raise ValueError(f"Unknown single read validation level: {value}.")
 
 
-class BaseSingleReadValidator:
+class BaseSingleReadValidator(ABC):
     """Base validator for a single read, should not be called directly. This class
     is meant to be used as an abstract class for all single read FastQ validations.
     """
 
+    @abstractmethod
     def validate(self, read):
         """Abstract validation method for single read validators."""
+        raise NotImplementedError(
+            f"'validate' not implemented for {self.__class__.__name__}"
+        )
+
+
+class BasePairedReadValidator(ABC):
+    """Base validator for paired reads, should not be called directly. This class
+    is meant to be used as an abstract class for all paired read FastQ validations.
+    """
+
+    @abstractmethod
+    def validate(self, readone, readtwo):
+        """Abstract validation method for paired read validators."""
         raise NotImplementedError(
             f"'validate' not implemented for {self.__class__.__name__}"
         )
@@ -101,18 +118,6 @@ class CompleteReadValidator(BaseSingleReadValidator):
             return False, f"Read is not complete."
 
         return True, None
-
-
-class BasePairedReadValidator:
-    """Base validator for paired reads, should not be called directly. This class
-    is meant to be used as an abstract class for all paired read FastQ validations.
-    """
-
-    def validate(self, readone, readtwo):
-        """Abstract validation method for paired read validators."""
-        raise NotImplementedError(
-            f"'validate' not implemented for {self.__class__.__name__}"
-        )
 
 
 class PairedReadnameValidator(BasePairedReadValidator):

@@ -1,6 +1,7 @@
 # Custom
 example/*.fastq
 example/*.fq
+docs/_*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
