@@ -1,6 +1,8 @@
 """All validation logic for fqlib."""
 
 import re
+import abc
+from pybloom import ScalableBloomFilter
 
 
 class ValidationLevel:
@@ -36,16 +38,15 @@ class ValidationLevel:
         raise ValueError(f"Unknown single read validation level: {value}.")
 
 
-class BaseSingleReadValidator:
+class BaseSingleReadValidator(abc.ABC):
     """Base validator for a single read, should not be called directly. This class
     is meant to be used as an abstract class for all single read FastQ validations.
     """
 
+    @abc.abstractmethod
     def validate(self, read):
         """Abstract validation method for single read validators."""
-        raise NotImplementedError(
-            f"'validate' not implemented for {self.__class__.__name__}"
-        )
+        pass
 
 
 class PluslineValidator(BaseSingleReadValidator):
@@ -111,16 +112,33 @@ class CompleteReadValidator(BaseSingleReadValidator):
         return True, None
 
 
-class BasePairedReadValidator:
+class DuplicateReadnameValidator(BaseSingleReadValidator):
+    """ Validate that no duplicate readnames exist."""
+
+    level = ValidationLevel.HIGH
+    code = "S005"
+
+    def __init__(self):
+        sbf = ScalableBloomFilter(initial_capacity=10000, error_rate=0.001, \
+                                  mode=ScalableBloomFilter.SMALL_SET_GROWTH)
+
+    def validate(self, read):
+        if read.name not in self.sbf:
+            self.sbf.add(read.name)
+        else:
+            return False, f'Duplicate readnames exist in fastq file {read.name}'
+        return True, None
+
+
+class BasePairedReadValidator(abc.ABC):
     """Base validator for paired reads, should not be called directly. This class
     is meant to be used as an abstract class for all paired read FastQ validations.
     """
 
+    @abc.abstractmethod
     def validate(self, readone, readtwo):
         """Abstract validation method for paired read validators."""
-        raise NotImplementedError(
-            f"'validate' not implemented for {self.__class__.__name__}"
-        )
+        pass
 
 
 class PairedReadnameValidator(BasePairedReadValidator):
