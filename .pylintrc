@@ -32,6 +32,7 @@ confidence=
 # --disable=W"
 disable=
     C0330,
+    syntax-error,           # for all pyx files!
     too-few-public-methods,
     long-suffix,
     standarderror-builtin,
