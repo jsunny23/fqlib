@@ -21,7 +21,7 @@ all:
 	@echo ""
 
 %.html: %.pyx
-	cd $(SRCDIR); cython -I ../ -a $<
+	cd $(SRCDIR); cython -I ../ -a `basename $<`
 
 .PHONY: build
 build:
