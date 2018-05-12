@@ -11,21 +11,25 @@ def command(cmd):
 
 
 def test_wellformed():
-    (stdout, stderr, exitcode) = command(
-        "fqlint example/00_wellformed/R1.fastq.gz example/00_wellformed/R2.fastq.gz"
-    )
+    read_one = os.path.abspath("./tests/inputs/00_wellformed/R1.fastq.gz")
+    read_two = os.path.abspath("./tests/inputs/00_wellformed/R2.fastq.gz")
+    (stdout, stderr, exitcode) = command(f"fqlint {read_one} {read_two}")
     assert exitcode == 0
 
 
-def test_mismatched_read_names():
-    (stdout, stderr, exitcode) = command(
-        "fqlint example/01_mismatched_readnames/R1.fastq example/01_mismatched_readnames/R2.fastq"
-    )
-    assert exitcode == 2
-
-
 def test_incomplete_reads():
-    (stdout, stderr, exitcode) = command(
-        "fqlint example/02_incomplete_reads/R1.fastq example/02_incomplete_reads/R2.fastq"
-    )
+    read_one = os.path.abspath("./tests/inputs/01_incomplete_reads/R1.fastq.gz")
+    read_two = os.path.abspath("./tests/inputs/01_incomplete_reads/R2.fastq.gz")
+    (stdout, stderr, exitcode) = command(f"fqlint {read_one} {read_two}")
     assert exitcode == 1
+
+
+def test_mismatched_read_names():
+    read_one = os.path.abspath(
+        "./tests/inputs/02_mismatched_readnames/R1.fastq.gz"
+    )
+    read_two = os.path.abspath(
+        "./tests/inputs/02_mismatched_readnames/R2.fastq.gz"
+    )
+    (stdout, stderr, exitcode) = command(f"fqlint {read_one} {read_two}")
+    assert exitcode == 2
