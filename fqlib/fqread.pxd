@@ -8,6 +8,7 @@ from libcpp cimport bool as cbool
 from libc.stdio cimport FILE, fopen, fclose, fputs, sprintf
 from libc.stdlib cimport rand
 from libc.string cimport strtok, strcmp, strrchr, strlen, strcat, strcpy
+from fqlib.rand cimport rand_nuclstr
 
 ctypedef struct FastQRead:
     # required fields

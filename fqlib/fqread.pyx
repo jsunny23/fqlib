@@ -78,9 +78,10 @@ cdef void fqread_generate(FastQRead &read,
     sprintf(x_pos, "%d", <int> (rand() % 10000 + 1)) # 10,000 x-pos.
     cdef char[64] y_pos
     sprintf(y_pos, "%d", <int> (rand() % 10000 + 1)) # 10,000 y-pos.
-    cdef char *sequence = "AAAAAAAAAACCCCCCCCCGGGGGGGGGGTTTTTTTTTT"
-    cdef char *plusline = "+"
-    cdef char *quality =  "JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
+    cdef char[101] sequence
+    rand_nuclstr(sequence, 101)
+    cdef char *plusline = b"+"
+    cdef char *quality = b"JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
 
     strcpy(readname, b"@")
     strcat(readname, instrument)
@@ -106,6 +107,7 @@ cdef void fqread_generate(FastQRead &read,
         quality
     )
 
+
 cdef void fqread_write_to_file(FastQRead &read, FILE *f):
     fputs(read.name, f)
     if strcmp(read.interleave, "") != 0:
@@ -120,6 +122,7 @@ cdef void fqread_write_to_file(FastQRead &read, FILE *f):
     fputs(b"\n", f)
     fputs(read.quality, f)
     fputs(b"\n", f)
+
 
 cdef void fqread_write_to_file_add_interleave(FastQRead &read, FILE *f, char* interleave):
     fputs(read.name, f)

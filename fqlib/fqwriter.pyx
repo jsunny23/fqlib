@@ -10,7 +10,7 @@ cdef class FastQWriter:
         self.filename_readone = filename_readone
         self.filename_readtwo = filename_readtwo
         sprintf(self.instrument, "fqlib%d", <int> (rand() % 10 + 1))
-        sprintf(self.flowcell, "AABBCC")
+        sprintf(self.flowcell, "%s", rand_alphastr_alloc(6))
         sprintf(self.run_number, "%d", <int> (rand() % 1000 + 1))
 
     cpdef generate(self, n_reads):

@@ -2,9 +2,12 @@
 
 import sys
 import argparse
+import fqlib.rand
 from fqlib.fqwriter import FastQWriter
 
 if __name__ == "__main__":
+    fqlib.rand.seed()
+
     parser = argparse.ArgumentParser(description="Generate FastQ files")
     parser.add_argument(
         "--read-one-filename",
@@ -27,6 +30,5 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-
     writer = FastQWriter(args.read_one_filename, args.read_two_filename)
     writer.generate(args.num_reads)

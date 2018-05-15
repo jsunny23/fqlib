@@ -28,7 +28,6 @@ fqlint
 
 * Insure that Python 3.6+ is installed on your machine. `fqlib` may work with earlier versions of Python, but that would be coincidental.
 
-
 ### Installing
 
 To get a full install of `fqlib` on your machine, you can run the following commands:
@@ -43,7 +42,6 @@ make install
 ## Development
 
 [![Build Status](https://travis-ci.org/stjude/fqlib.svg?branch=development)](https://travis-ci.org/stjude/fqlib)
-
 
 You can get a development version of the package and link it into your local Python installation like so:
 
@@ -61,6 +59,12 @@ You can run the tests by running the following command. We are actively improvin
 ```
 make tests
 ```
+
+## Binaries
+
+* `fqlint`: Lints FastQ files and reports errors in the fashion you specify in on the command line.
+* `fqgen`: Generates a mock Illumina-generated FastQ file. _Note_: these only meant to
+  emulate the FastQ format! These reads will not align to any genome (at least, on purpose).
 
 ## Contributing
 

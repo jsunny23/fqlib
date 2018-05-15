@@ -7,6 +7,7 @@
 from libc.stdio cimport FILE, fopen, fputs, fclose, sprintf
 from libc.stdlib cimport rand
 from fqlib.fqread cimport FastQRead, fqread_generate, fqread_write_to_file_add_interleave
+from fqlib.rand cimport rand_alphastr_alloc
 
 cdef class FastQWriter:
     cdef public char* filename_readone
