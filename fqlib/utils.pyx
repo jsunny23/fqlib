@@ -12,7 +12,8 @@ cdef class CFileReader:
     SingleFastQReader python class."""
 
     def __cinit__(self, filename: str):
-        self.filename = realpath(filename, NULL)
+        self.filename = filename
+        #self.filename = realpath(filename, NULL)
         self.handle = gzopen(self.filename, "r")
         if self.handle == NULL:
             raise RuntimeError("Could not open file!")

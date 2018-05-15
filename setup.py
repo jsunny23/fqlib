@@ -2,6 +2,7 @@
 # yapf: disable
 
 import os
+import platform
 import sysconfig
 from glob import glob
 from setuptools import setup, Extension
@@ -12,19 +13,22 @@ except:
     raise RuntimeError("You need Cython to build this package! Try 'pip install cython' first.")
 
 # determine custom compiler flags
-extra_compile_args = sysconfig.get_config_var('CFLAGS').split()
-extra_compile_args += ["-std=c++0x", "-Wall", "-Wextra"]
+extra_compile_args = []
+existing_cflags = sysconfig.get_config_var("CFLAGS")
+if existing_cflags:
+    extra_compile_args += existing_cflags.split()
+if platform.system() != "Windows":
+    extra_compile_args += ["-std=c++0x", "-Wall", "-Wextra"]
 if 'CFLAGS' in os.environ:
     extra_compile_args += os.environ['CFLAGS'].split()
 
 # build all extensions that need to be compiled dynamically.
 extensions = []
 base_path = os.path.dirname(os.path.realpath(__file__))
-all_pyx = os.path.join(base_path, "fqlib/*.pyx")
+all_pyx = os.path.join(base_path, "fqlib", "*.pyx")
 for pyx in glob(all_pyx):
-
     stripped_filename = pyx.replace(base_path, "")
-    if stripped_filename[0] == "/":
+    if stripped_filename[0] == os.path.sep:
         stripped_filename = stripped_filename[1:]
 
     modulename = stripped_filename.replace(".pyx", "").replace(os.path.sep, ".")

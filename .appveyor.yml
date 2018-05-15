@@ -1,0 +1,28 @@
+build: false
+shallow_clone: true
+
+environment:
+  matrix:
+    - PYTHON: "C:\\Python36"
+      CONDA: "C:\\Miniconda36"
+    - PYTHON: "C:\\Python36-x64"
+      CONDA: "C:\\Miniconda36-x64"
+
+
+init:
+  - "%PYTHON%/python.exe --version"
+
+install:
+  - "set PATH=%CONDA%;%CONDA%\\Scripts;%PATH%"
+  - "set LIB=%CONDA%\\Library\\lib;%LIB%"
+  - "set INCLUDE=%CONDA%\\Library\\include;%INCLUDE%"
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda install -c anaconda zlib
+  - "%PYTHON%/Scripts/pip.exe install -r requirements.txt"
+
+build_script:
+  - "%PYTHON%/python.exe setup.py install"
+
+test_script:
+  - "%PYTHON%/Scripts/nosetests"
