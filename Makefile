@@ -41,7 +41,7 @@ annotate: $(HTML_FILES)
 
 .PHONY: test
 test:
-	nosetests
+	nosetests --verbose
 
 # because I'm lazy and sometimes type tests
 .PHONY: tests
