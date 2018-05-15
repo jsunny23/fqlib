@@ -8,7 +8,7 @@ from libcpp cimport bool as cbool
 from libc.stdio cimport FILE, fopen, fclose, fputs, sprintf
 from libc.stdlib cimport rand
 from libc.string cimport strtok, strcmp, strrchr, strlen, strcat, strcpy
-from fqlib.rand cimport rand_nuclstr
+from fqlib.rand cimport rand_nucl_str, rand_qual_str
 
 ctypedef struct FastQRead:
     # required fields
@@ -25,9 +25,12 @@ cdef void fqread_init_empty(FastQRead &read)
 cdef void fqread_init(FastQRead&, char* name, char* sequence, char* plusline, char* quality)
 cdef void fqread_write_to_file(FastQRead &read, FILE *f)
 cdef void fqread_write_to_file_add_interleave(FastQRead &read, FILE *f, char* interleave)
-cdef void fqread_generate(FastQRead &read, 
-                          char* instrument,
-                          char* run_number,
-                          char *flowcell,
-                          char *interleave)
+cdef void fqread_populate_paired_reads(
+    FastQRead &read_one, 
+    FastQRead &read_two, 
+    char* instrument,
+    char* run_number,
+    char *flowcell,
+    char *interleave
+)
 cpdef str fqread_repr(FastQRead &read)

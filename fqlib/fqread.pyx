@@ -61,27 +61,33 @@ cdef void fqread_init(
             read.interleave = interleave
         i += 1
 
-
-cdef void fqread_generate(FastQRead &read, 
-                          char* instrument,
-                          char* run_number,
-                          char *flowcell,
-                          char *interleave):
+cdef void fqread_populate_paired_reads(
+    FastQRead &read_one, 
+    FastQRead &read_two, 
+    char* instrument,
+    char* run_number,
+    char *flowcell,
+    char *interleave
+):
     """Generate values emulating an Illumina-based FastQ read."""
 
     cdef char[1024] readname
     cdef char[64] lane 
-    sprintf(lane, "%d", <int> (rand() % 8 + 1)) # 8 lanes.
     cdef char[64] tile
-    sprintf(tile, "%d", <int> (rand() % 60 + 1)) # 60 tiles.
     cdef char[64] x_pos
-    sprintf(x_pos, "%d", <int> (rand() % 10000 + 1)) # 10,000 x-pos.
     cdef char[64] y_pos
-    sprintf(y_pos, "%d", <int> (rand() % 10000 + 1)) # 10,000 y-pos.
-    cdef char[101] sequence
-    rand_nuclstr(sequence, 101)
+    cdef char[101] sequence_one
+    cdef char[101] sequence_two
     cdef char *plusline = b"+"
-    cdef char *quality = b"JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ"
+    cdef char[101] quality_one
+    cdef char[101] quality_two
+
+    # Common fields
+
+    sprintf(lane, "%d", <int> (rand() % 8 + 1)) # 8 lanes.
+    sprintf(tile, "%d", <int> (rand() % 60 + 1)) # 60 tiles.
+    sprintf(x_pos, "%d", <int> (rand() % 10000 + 1)) # 10,000 x-pos.
+    sprintf(y_pos, "%d", <int> (rand() % 10000 + 1)) # 10,000 y-pos.
 
     strcpy(readname, b"@")
     strcat(readname, instrument)
@@ -99,12 +105,25 @@ cdef void fqread_generate(FastQRead &read,
     strcat(readname, y_pos)
     strcat(readname, interleave)
 
+    rand_nucl_str(sequence_one, 101)
+    rand_qual_str(quality_one, 101)
+    rand_nucl_str(sequence_two, 101)
+    rand_qual_str(quality_two, 101)
+
     fqread_init(
-        read,
+        read_one,
         readname,
-        sequence,
+        sequence_one,
         plusline,
-        quality
+        quality_one
+    )
+
+    fqread_init(
+        read_two,
+        readname,
+        sequence_two,
+        plusline,
+        quality_two
     )
 
 
